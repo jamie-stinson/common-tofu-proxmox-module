@@ -24,11 +24,13 @@ variable "talos" {
         cpu   = string
         memory = string
         nodes = map(object({}))
+        node_prefix = string
       })
       worker = object({
         cpu    = string
         memory = string
         nodes  = map(object({}))
+        node_prefix = string
       })
     })
   })
