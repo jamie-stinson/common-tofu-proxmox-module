@@ -5,7 +5,7 @@ data "http" "schematic_id" {
 }
 
 resource "proxmox_virtual_environment_download_file" "this" {
-  node_name               = "projectwhitebox"
+  node_name               = var.talos.node_data.node_name
   content_type            = "iso"
   datastore_id            = "local"
   decompression_algorithm = "gz"
