@@ -14,11 +14,21 @@ resource "random_integer" "this" {
 }
 
 resource "proxmox_virtual_environment_vm" "this" {
-  for_each    = { for key, value in merge(var.talos.node_data.control_plane.nodes, var.talos.node_data.worker.nodes) : key => value }
-  name        = format("%s-%s", contains(keys(var.talos.node_data.control_plane.nodes), each.key) ? "controlplane" : "worker", random_string.this[each.key].result)
-  node_name   = "projectwhitebox"
-  tags        = ["terraform", "talos"]
-  vm_id       = random_integer.this[each.key].result
+  for_each = { for key, value in merge(var.talos.node_data.control_plane.nodes, var.talos.node_data.worker.nodes) : 
+    key => merge(
+      value, 
+      {
+        type     = contains(keys(var.talos.node_data.control_plane.nodes), key) ? "controlplane" : "worker"
+        cpu      = contains(keys(var.talos.node_data.control_plane.nodes), key) ? var.talos.node_data.control_plane.cpu : var.talos.node_data.worker.cpu
+        memory   = contains(keys(var.talos.node_data.control_plane.nodes), key) ? var.talos.node_data.control_plane.memory : var.talos.node_data.worker.memory
+      }
+    )
+  }
+
+  name      = format("%s-%s", each.value.type, random_string.this[each.key].result)
+  node_name = "${var.talos.node_data.node_name}"
+  tags      = ["terraform", "talos"]
+  vm_id     = random_integer.this[each.key].result
 
   agent {
     enabled = true
@@ -34,19 +44,20 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   cpu {
-    cores = "${var.talos.node_data.control_plane.cpu}"
-    type  = "host"
+    cores = tonumber(each.value.cpu)
+    type  = "x86-64-v2"
   }
 
   memory {
-    dedicated = "${var.talos.node_data.control_plane.memory}"
-    floating  = "${var.talos.node_data.control_plane.memory}"
+    dedicated = tonumber(each.value.memory)
   }
+
 
   disk {
     datastore_id = "local-lvm"
     file_id      = proxmox_virtual_environment_download_file.this.id
     interface    = "virtio0"
+    size         = "${var.talos.node_data.disk_size}"
   }
 
   initialization {
@@ -67,4 +78,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   network_device {
     bridge = "vmbr0"
   }
+  depends_on = [
+    proxmox_virtual_environment_download_file.this
+  ]
 }

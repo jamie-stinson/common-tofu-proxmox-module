@@ -8,11 +8,14 @@ variable "talos" {
     })
     cluster = object({
       name               = string
-      vip_address        = string
+      api_server         = string
       kubernetes_version = string
       talos_version      = string
     })
     node_data = object({
+      disk_size            = string
+      node_name            = string
+      subnet               = string
       default_gateway      = string
       primary_dns_server   = string
       secondary_dns_server = string

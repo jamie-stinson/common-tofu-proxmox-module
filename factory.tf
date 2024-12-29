@@ -13,4 +13,10 @@ resource "proxmox_virtual_environment_download_file" "this" {
 
   url       = "${var.talos.factory.url}/image/${jsondecode(data.http.schematic_id.response_body)["id"]}/${var.talos.cluster.talos_version}/${var.talos.factory.platform}-${var.talos.factory.arch}.raw.gz"
   file_name = "talos-${jsondecode(data.http.schematic_id.response_body)["id"]}-${var.talos.cluster.talos_version}-${var.talos.factory.platform}-${var.talos.factory.arch}.img"
+  lifecycle {
+    create_before_destroy = true
+  }
+  depends_on = [
+    data.http.schematic_id
+  ]
 }
