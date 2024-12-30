@@ -20,17 +20,16 @@ variable "talos" {
       primary_dns_server   = string
       secondary_dns_server = string
       ntp_endpoint         = string
+      node_prefix = string
       control_plane = object({
         cpu   = string
         memory = string
         nodes = map(object({}))
-        node_prefix = string
       })
       worker = object({
         cpu    = string
         memory = string
         nodes  = map(object({}))
-        node_prefix = string
       })
     })
   })

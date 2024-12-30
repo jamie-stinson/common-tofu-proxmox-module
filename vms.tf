@@ -24,8 +24,8 @@ resource "proxmox_virtual_environment_vm" "this" {
       }
     )
   }
-  
-  name      = format("%s-%s", each.value.type == "controlplane" && var.talos.node_data.control_plane.node_prefix != ""  ? var.talos.node_data.control_plane.node_prefix  : each.value.type == "worker" && var.talos.node_data.worker.node_prefix != ""  ? var.talos.node_data.worker.node_prefix  : each.value.type, random_string.this[each.key].result)
+
+  name      = format("%s-%s-%s", var.talos.node_data.node_prefix ,each.value.type, random_string.this[each.key].result)
   node_name = "${var.talos.node_data.node_name}"
   tags      = ["terraform", "talos"]
   vm_id     = random_integer.this[each.key].result
