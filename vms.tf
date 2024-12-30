@@ -25,7 +25,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     )
   }
 
-  name      = format("%s-%s", each.value.type, random_string.this[each.key].result)
+  name      = format("%s%s-%s", var.talos.node_data.node_prefix ,each.value.type, random_string.this[each.key].result)
   node_name = "${var.talos.node_data.node_name}"
   tags      = ["terraform", "talos"]
   vm_id     = random_integer.this[each.key].result

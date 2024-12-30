@@ -20,6 +20,7 @@ variable "talos" {
       primary_dns_server   = string
       secondary_dns_server = string
       ntp_endpoint         = string
+      node_prefix          = optional(string, "")
       control_plane = object({
         cpu   = string
         memory = string
