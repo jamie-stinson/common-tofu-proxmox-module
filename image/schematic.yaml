@@ -2,4 +2,3 @@ customization:
   systemExtensions:
     officialExtensions:
       - siderolabs/qemu-guest-agent
-      - siderolabs/nvidia-open-gpu-kernel-modules-production
