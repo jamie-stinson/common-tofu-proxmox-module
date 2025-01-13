@@ -95,6 +95,10 @@ resource "proxmox_virtual_environment_vm" "this" {
     bridge = "vmbr0"
   }
 
+  lifecycle {
+    ignore_changes = [disk[0].file_id]
+  }
+
   depends_on = [
     proxmox_virtual_environment_download_file.this
   ]
