@@ -1,5 +1,4 @@
 variable "talos" {
-  description = "Talos configuration"
   type = object({
     factory = object({
       url      = string
@@ -7,30 +6,54 @@ variable "talos" {
       arch     = string
     })
     cluster = object({
-      name               = string
-      api_server         = string
-      kubernetes_version = string
-      talos_version      = string
-    })
-    node_data = object({
-      disk_size            = string
-      node_name            = string
-      subnet               = string
-      default_gateway      = string
-      primary_dns_server   = string
-      secondary_dns_server = string
-      ntp_endpoint         = string
-      node_prefix          = optional(string, "")
-      control_plane = object({
-        cpu   = string
-        memory = string
-        nodes = map(object({}))
+      name                = string
+      kubernetes_version  = string
+      talos_version       = string
+      api_server_endpoint = string
+      networking          = object({
+        cni             = string
+        pod_subnets     = optional(list(string))
+        service_subnets = optional(list(string))
+        default_gateway = string
+        dns_servers     = list(string)
+        ntp_servers     = list(string)
       })
-      worker = object({
-        cpu    = string
-        memory = string
-        nodes  = map(object({}))
+      monitoring          = object({
+        kubernetes_metrics_server = optional(bool)
+        containerd_metrics_server = optional(bool)
+      })
+      storage             = object({
+        install_disk         = string
+        install_disk_size    = string
+        encryption_type      = optional(string)
+        extra_kubelet_mounts = optional(list(object({
+          destination = string
+          source     = string
+          type       = string
+          options    = optional(list(string))
+        })))
+      })
+      compute             = object({
+        control_plane = object({
+          subnet_mask = string
+          nodes       = list(string)
+          cpu         = number
+          memory      = number
+        })
+        worker        = object({
+          subnet_mask = string
+          nodes       = list(string)
+          cpu         = number
+          memory      = number
+        })
       })
     })
+  })
+}
+
+variable "proxmox" {
+  type = object({
+    node_name   = string
+    node_prefix = optional(string, "")
   })
 }
