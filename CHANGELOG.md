@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/jamie-stinson/common-tofu-proxmox-module/compare/v0.3.0...v0.4.0) (2025-01-13)
+
+
+### Features
+
+* code refactor ([#8](https://github.com/jamie-stinson/common-tofu-proxmox-module/issues/8)) ([f570cfd](https://github.com/jamie-stinson/common-tofu-proxmox-module/commit/f570cfdee12054a9fd1b838e384a7cbda69aee82))
+
 ## [0.3.0](https://github.com/jamie-stinson/common-tofu-proxmox-module/compare/v0.2.1...v0.3.0) (2024-12-30)
 
 
