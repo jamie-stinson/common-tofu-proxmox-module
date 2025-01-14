@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/jamie-stinson/common-tofu-proxmox-module/compare/v0.4.0...v0.5.0) (2025-01-13)
+
+
+### Features
+
+* **vm:** ignore iso changes to vm ([#10](https://github.com/jamie-stinson/common-tofu-proxmox-module/issues/10)) ([4c1b194](https://github.com/jamie-stinson/common-tofu-proxmox-module/commit/4c1b194d703a6e52d8cf9739a4b2840a62a3773b))
+
 ## [0.4.0](https://github.com/jamie-stinson/common-tofu-proxmox-module/compare/v0.3.0...v0.4.0) (2025-01-13)
 
 
