@@ -1,9 +1,9 @@
 resource "random_string" "this" {
   for_each = {
-    for ip in concat(
+    for ip, node in merge(
       var.talos.cluster.compute.control_plane.nodes,
       var.talos.cluster.compute.worker.nodes
-    ) : ip => ip
+    ) : ip => node
   }
 
   length   = 8
@@ -15,10 +15,10 @@ resource "random_string" "this" {
 
 resource "random_integer" "this" {
   for_each = {
-    for ip in concat(
+    for ip, node in merge(
       var.talos.cluster.compute.control_plane.nodes,
       var.talos.cluster.compute.worker.nodes
-    ) : ip => ip
+    ) : ip => node
   }
 
   min = 1
@@ -27,19 +27,20 @@ resource "random_integer" "this" {
 
 resource "proxmox_virtual_environment_vm" "this" {
   for_each = {
-    for ip in concat(
+    for ip, node in merge(
       var.talos.cluster.compute.control_plane.nodes,
       var.talos.cluster.compute.worker.nodes
     ) : ip => {
-      type        = contains(var.talos.cluster.compute.control_plane.nodes, ip) ? "controlplane" : "worker"
-      subnet_mask = contains(var.talos.cluster.compute.control_plane.nodes, ip) ? var.talos.cluster.compute.control_plane.subnet_mask : var.talos.cluster.compute.worker.subnet_mask
-      cpu         = contains(var.talos.cluster.compute.control_plane.nodes, ip) ? var.talos.cluster.compute.control_plane.cpu : var.talos.cluster.compute.worker.cpu
-      memory      = contains(var.talos.cluster.compute.control_plane.nodes, ip) ? var.talos.cluster.compute.control_plane.memory : var.talos.cluster.compute.worker.memory
+      type        = contains(keys(var.talos.cluster.compute.control_plane.nodes), ip) ? "controlplane" : "worker"
+      subnet_mask = contains(keys(var.talos.cluster.compute.control_plane.nodes), ip) ? var.talos.cluster.compute.control_plane.subnet_mask : var.talos.cluster.compute.worker.subnet_mask
+      cpu         = contains(keys(var.talos.cluster.compute.control_plane.nodes), ip) ? var.talos.cluster.compute.control_plane.cpu : var.talos.cluster.compute.worker.cpu
+      memory      = contains(keys(var.talos.cluster.compute.control_plane.nodes), ip) ? var.talos.cluster.compute.control_plane.memory : var.talos.cluster.compute.worker.memory
+      node_name   = node
     }
   }
 
   name      = format("%s%s-%s", var.proxmox.node_prefix, each.value.type, random_string.this[each.key].result)
-  node_name = var.proxmox.node_name
+  node_name = each.value.node_name
   tags      = ["terraform", "talos", "${each.value.type}"]
   vm_id     = random_integer.this[each.key].result
 
@@ -74,7 +75,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
-    file_id      = proxmox_virtual_environment_download_file.this.id
+    file_id      = proxmox_virtual_environment_download_file.this[each.value.node_name].id
     file_format  = "raw"
     size         = var.talos.cluster.storage.install_disk_size
   }

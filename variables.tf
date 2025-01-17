@@ -1,15 +1,16 @@
 variable "talos" {
   type = object({
     factory = object({
-      url      = string
-      platform = string
-      arch     = string
+      url       = string
+      platform  = string
+      arch      = string
     })
     cluster = object({
       name                = string
       kubernetes_version  = string
       talos_version       = string
       api_server_endpoint = string
+      extensions          = optional(list(string))
       networking          = object({
         cni             = string
         pod_subnets     = optional(list(string))
@@ -36,13 +37,13 @@ variable "talos" {
       compute             = object({
         control_plane = object({
           subnet_mask = string
-          nodes       = list(string)
+          nodes       = map(string)
           cpu         = number
           memory      = number
         })
         worker        = object({
           subnet_mask = string
-          nodes       = list(string)
+          nodes       = map(string)
           cpu         = number
           memory      = number
         })
@@ -53,7 +54,7 @@ variable "talos" {
 
 variable "proxmox" {
   type = object({
-    node_name   = string
     node_prefix = optional(string, "")
+    nodes       = list(string)
   })
 }
