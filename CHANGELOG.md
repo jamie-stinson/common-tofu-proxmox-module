@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/jamie-stinson/common-tofu-proxmox-module/compare/v0.5.0...v0.6.0) (2025-01-17)
+
+
+### Features
+
+* add support for multiple proxmox nodes ([#12](https://github.com/jamie-stinson/common-tofu-proxmox-module/issues/12)) ([b22b99d](https://github.com/jamie-stinson/common-tofu-proxmox-module/commit/b22b99d59d8f695004af6813988987b8b4917cab))
+
 ## [0.5.0](https://github.com/jamie-stinson/common-tofu-proxmox-module/compare/v0.4.0...v0.5.0) (2025-01-13)
 
 
